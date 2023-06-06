@@ -1,0 +1,30 @@
+---
+title: "Untitled"
+author: "Cleo Schwarz"
+date: "r"
+format: 
+  html:
+    toc: true
+    code-fold: show
+    code-tools: true
+    df-print: paged
+    embed-resources: true 
+---
+# load libraries 
+library(here)
+library(tidyverse)
+library(lubridate)
+
+
+## Introduction 
+
+
+
+## Data
+
+Load data from FOPH 
+
+```{r}
+# read data 
+cases <- read_csv(here(("data/raw/")))
+

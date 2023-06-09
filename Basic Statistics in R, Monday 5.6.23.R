@@ -9,6 +9,7 @@ gitcreds::gitcreds_set()
 
 install.packages("tidyverse")
 library(tidyverse)
+library(dplyr)
 
 # exercise 5.6.23 afternoon 
 data_ebola <- read_csv("data/raw/ebola.csv")
@@ -62,7 +63,8 @@ print(plot_ebola_line_facet)
 
 # create column plot
 plot_ebola_col_facet <- ggplot(data = data_ebola_cum_cases, 
-                            mapping = aes(x = date, y = cum_conf_cases, fill = country, colour = country)) + geom_col(alpha = 0.7, linetype = "solid", linewidth = 0.1, position = "stack", width = 0.7) +
+                            mapping = aes(x = date, y = cum_conf_cases, fill = country, colour = country)) + 
+  geom_col(alpha = 0.7, linetype = "solid", linewidth = 0.1, position = "stack", width = 0.7) +
   scale_fill_manual(name = "Country",
                     breaks = c("Guinea", "Liberia", "Sierra Leone"),
                     values = c(unibeRedS()[1], unibeOceanS()[1], unibeMustardS()[1]),

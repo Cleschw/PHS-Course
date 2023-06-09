@@ -23,17 +23,15 @@ library(rstatix)
 
 ## Introduction
 
-Smokers as well as a high bmi are both well known risk factors for any disease. 
-For this analysis we focused on one of these risk factors, smoking. 
+Smokers as well as a high BMI are both well known risk factors for any disease. In this analysis the focus lays on smokers.
 
-The aim of this analysis was to investigate whether smoking has an impact on insurance charges or in other words if smokers pay more insurance charges.
+The aim of this study was to investigate whether smoking has an impact on the individual insurance charges. 
 
 ## Data
 
 ### Read data and transform data
 
-The data for this analysis was obtained from kaggle. 
-The dataset was selected for only the important variables. 
+The data for this analysis is open source and was obtained from [Kaggel](https://www.kaggle.com/datasets/mirichoi0218/insurance?resource=download). From all data, only the values of interest were selected (e.g. age, bmi, sex, smoker, charges). 
 
 ```{r}
 #| output: false
@@ -64,7 +62,7 @@ summarysmoke <- insurance |>
 
 ### Test for normality
 
-For visual check if the charges are in normal distribution a QQ-plot and a histogram was created. Further, the shapiro test was performed. 
+For visual check if the charges are in normal distribution a QQ-plot and a histogram was created. Further, the shapiro test was performed.
 
 ####QQ-Plot
 
@@ -134,13 +132,8 @@ insurance |>
 
 ```
 
-## plots
+# plots
 
-### boxplot 1 smokers vs charges
-
-ggplot(insurance , aes(x = smoker, y = charges, fill = smoker )) + geom_boxplot() + ggtitle(label = "Smokers vs. Charges") + xlab(label = "smoker") + ylab(label = "charges")+ theme_classic() + theme(legend.position="bottom")
-
-# plots 
 ```{r}
 ggplot(insurance , aes(x = smoker, y = charges, fill = smoker )) + 
   geom_boxplot() +
@@ -149,7 +142,6 @@ ggplot(insurance , aes(x = smoker, y = charges, fill = smoker )) +
   ylab(label = "charges")+
   theme_classic() + theme(legend.position="bottom")
 ```
-
 
 ## Results
 

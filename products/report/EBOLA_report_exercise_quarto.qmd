@@ -1,7 +1,7 @@
 ---
-title: "Untitled"
+title: "Ebola in Guinea, Liberia and Sierra Leone"
 author: "Cleo Schwarz"
-date: "r"
+date: "r date()"
 format: 
   html:
     toc: true
@@ -10,21 +10,62 @@ format:
     df-print: paged
     embed-resources: true 
 ---
-# load libraries 
-library(here)
-library(tidyverse)
-library(lubridate)
 
+```{r}
+#| include: false 
+# Load libraries
+library(here) 
+library(tidyverse) 
+library(lubridate) 
+library(unibeCols)
+```
 
-## Introduction 
+## Introduction
 
-
+The aim of this exercise is to visualize Ebola outbreaks in Guinea, Liberia and Sierra Leone.
 
 ## Data
 
-Load data from FOPH 
+Load data from data.world 
 
 ```{r}
-# read data 
-cases <- read_csv(here(("data/raw/")))
+# read data
 
+cases <- read_csv("C:/Users/cleos/OneDrive/Universität Bern/Kurse/R_project_template/data/raw/ebola.csv") 
+
+
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+# Process data
+selection <- c("Sierra Leone","Guinea","Liberia")
+window_start <- ymd("2014-08-28")
+window_end <- ymd("2014-04-01")
+cases_selection <- cases |> 
+  filter(Country %in% selection & Date >= window_start & Date <= window_end) |>
+  select(Date, Cum_conf_cases)
+```
+
+## Results 
+@fig-cases shows the number of Ebola cases in Guinea, Sierra Leone and Liberia from `r window_start`to `r window_end`
+
+```{r}
+#| label: fig-cases
+#| fig-cap: "Ebola Cases in Guinea, Sierra Leone and Liberia in 2014" 
+#| fig-width: 8
+#| fig-height: 4
+ggplot(cases, aes(x = Date, y = Cum_conf_cases)) +
+  geom_bar(stat = "identity", fill = unibeSaphireS()[1]) +
+  labs(x = "", y ="Ebola cases", ) +
+  theme_minimal() 
+```
+
+# Conclusions
+
+The number of Ebola cases in Guniea, Sierra Leone and Liberia rapidly increased considering cases before March 31th, 2015. 

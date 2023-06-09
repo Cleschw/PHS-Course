@@ -1,0 +1,158 @@
+---
+title: "Assessment_Cleo_Schwarz"
+author: Cleo Schwarz
+date: "`r date()`"
+format: 
+  html:
+    toc: true
+    code-fold: show
+    code-tools: true
+    df-print: paged
+    embed-resources: true 
+---
+
+```{r}
+#| include: false 
+# Load libraries
+library(here) 
+library(tidyverse) 
+library(lubridate) 
+library(gtsummary)
+library(rstatix)
+```
+
+## Introduction
+
+Smokers as well as a high bmi are both well known risk factors for any disease. 
+For this analysis we focused on one of these risk factors, smoking. 
+
+The aim of this analysis was to investigate whether smoking has an impact on insurance charges or in other words if smokers pay more insurance charges.
+
+## Data
+
+### Read data and transform data
+
+The data for this analysis was obtained from kaggle. 
+The dataset was selected for only the important variables. 
+
+```{r}
+#| output: false
+dat <- read_csv(here("data/raw/insurance_with_date.csv"))
+str(dat)
+
+insurance <- dat |> 
+  select(X, age, sex, bmi, smoker, charges) |> 
+  mutate(sex = factor(sex, levels=c("male", "female"), labels=c("m","f")), 
+         smoker = factor(smoker))
+```
+
+### Descriptive statistics
+
+This table shows the mean and median, SD (standard deviation), smallest and largest values of charges, age and bmi sorted by smorkers.
+
+```{r}
+summarysmoke <- insurance |>
+  tbl_summary(
+    by = smoker, 
+    type = all_continuous() ~ "continuous2", 
+    include =c("charges","bmi", "age"),
+    statistic = all_continuous() ~ c("{mean} ({sd})",
+                                  "{median} ({p25}, {p75})",
+                                  "{min}, {max}")
+  ) 
+```
+
+### Test for normality
+
+For visual check if the charges are in normal distribution a QQ-plot and a histogram was created. Further, the shapiro test was performed. 
+
+####QQ-Plot
+
+```{r}
+insurance %>%
+  ggplot(aes(sample = charges, fill = smoker, colour = smoker)) + 
+  geom_qq_line(distribution = stats::qnorm) +
+  geom_qq(distribution = stats::qnorm) + 
+  xlab("theoretical") +
+  ylab("sample") +
+  theme_classic() +
+  facet_wrap("sex")
+```
+
+####Histogram
+
+```{r}
+ggplot(insurance, aes(x=charges)) +
+  geom_histogram(bins=40) +
+  theme_classic()
+```
+
+This analysis was also conducted by taking the logarithmic values of "charges"
+
+####QQ-Plot - log
+
+```{r}
+insurance$charges_log <- log(insurance$charges)
+
+insurance %>%
+  ggplot(aes(sample = charges_log, fill = smoker, colour = smoker)) + 
+  geom_qq_line(distribution = stats::qnorm) +
+  geom_qq(distribution = stats::qnorm) + 
+  xlab("theoretical") +
+  ylab("sample") +
+  theme_classic() +
+  facet_wrap("smoker")
+
+insurance |> 
+  group_by(smoker) |> 
+  shapiro_test(charges_log)
+```
+
+####Histogram - log
+
+```{r}
+ggplot(insurance, aes(x=charges_log)) +
+  geom_histogram(bins=40) +
+  theme_classic()
+```
+
+By doing the logarithm a conversion in normal distribution was possible.
+
+## t-test
+
+For comparison of the means of charges of smokers vs. non smokers a Wilcoxon Test was performed. The analysis was also conducted with the logarithmic values of charges by doing a paired ttest with them.
+
+```{r}
+
+insurance |> 
+  t_test(charges_log ~ smoker) |> 
+  rename(non_smoker = group1, smoker = group2)
+         
+  
+insurance |> 
+  wilcox_test(charges ~ smoker) 
+
+```
+
+## plots
+
+### boxplot 1 smokers vs charges
+
+ggplot(insurance , aes(x = smoker, y = charges, fill = smoker )) + geom_boxplot() + ggtitle(label = "Smokers vs. Charges") + xlab(label = "smoker") + ylab(label = "charges")+ theme_classic() + theme(legend.position="bottom")
+
+# plots 
+```{r}
+ggplot(insurance , aes(x = smoker, y = charges, fill = smoker )) + 
+  geom_boxplot() +
+  ggtitle(label = "Smokers vs. Charges") +
+  xlab(label = "smoker") +
+  ylab(label = "charges")+
+  theme_classic() + theme(legend.position="bottom")
+```
+
+
+## Results
+
+## Conclusion
+
+There is a statistical significance between higher charges and smoking.
